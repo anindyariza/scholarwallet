@@ -1,0 +1,6 @@
+{
+  "name": "ScholarWallet",
+  "description": "A comprehensive financial management tool for university students featuring real-time tracking, budgeting, saving goals, and financial health analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

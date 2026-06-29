@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Publicly readable collections (for login and feature flags)
+    match /usernames/{username} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    match /config/{configId} {
+      allow read: if true;
+      allow write: if isSignedIn() && request.auth.token.email == "11251017@student.itk.ac.id";
+    }
+
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow write: if isSignedIn() && request.auth.token.email == "11251017@student.itk.ac.id";
+    }
+
+    // User-specific collections
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /savingGoals/{goalId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /budgets/{budgetId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /feedbacks/{feedbackId} {
+      allow create: if isSignedIn();
+      allow read: if isSignedIn() && (request.auth.token.email == "11251017@student.itk.ac.id" || resource.data.userId == request.auth.uid);
+      allow update, delete: if isSignedIn() && request.auth.token.email == "11251017@student.itk.ac.id";
+    }
+
+    match /chats/{chatId} {
+      allow create: if isSignedIn() && (request.auth.token.email == "11251017@student.itk.ac.id" || request.resource.data.userId == request.auth.uid);
+      allow read: if isSignedIn() && (request.auth.token.email == "11251017@student.itk.ac.id" || resource == null || resource.data.userId == request.auth.uid);
+      allow update, delete: if isSignedIn() && request.auth.token.email == "11251017@student.itk.ac.id";
+    }
+  }
+}
