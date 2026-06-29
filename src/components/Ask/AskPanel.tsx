@@ -110,13 +110,28 @@ export default function AskPanel({ user }: AskPanelProps) {
               senderId: 'admin',
               senderName: 'ScholarWallet AI',
               senderEmail: 'ai@scholarwallet.com',
-              text: data.reply,
+              text: data.reply || data.error || 'Terjadi kesalahan saat memproses respon.',
             });
           } else {
-            console.error('AI Auto-reply API failed.');
+            console.error('AI Auto-reply API failed.', response.status);
+            const errData = await response.json().catch(() => ({}));
+            await sendChatMessage({
+              userId: user.uid,
+              senderId: 'admin',
+              senderName: 'ScholarWallet AI',
+              senderEmail: 'ai@scholarwallet.com',
+              text: `⚠️ Maaf, terjadi kesalahan saat menghubungi server AI (Status: ${response.status}). ${errData.error || ''}`,
+            });
           }
-        } catch (apiErr) {
+        } catch (apiErr: any) {
           console.error('Error fetching AI Auto-reply:', apiErr);
+          await sendChatMessage({
+            userId: user.uid,
+            senderId: 'admin',
+            senderName: 'ScholarWallet AI',
+            senderEmail: 'ai@scholarwallet.com',
+            text: `⚠️ Maaf, gagal terhubung ke server AI. (${apiErr.message || 'Network Error'})`,
+          });
         } finally {
           setIsAiTyping(false);
         }

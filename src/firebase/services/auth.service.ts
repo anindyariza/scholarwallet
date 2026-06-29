@@ -1,5 +1,6 @@
 import { 
   signInWithPopup, 
+  signInWithRedirect,
   signOut, 
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -14,7 +15,12 @@ export const loginWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     return result.user;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === 'auth/popup-blocked') {
+      console.warn('Popup blocked, falling back to redirect...');
+      await signInWithRedirect(auth, googleProvider);
+      return null;
+    }
     console.error('Error signing in with Google:', error);
     throw error;
   }
