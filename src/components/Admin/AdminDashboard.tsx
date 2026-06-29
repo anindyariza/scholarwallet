@@ -51,7 +51,13 @@ export default function AdminDashboard({ onLogout, isDarkMode, toggleDarkMode }:
   const [selectedChatUserId, setSelectedChatUserId] = useState<string | null>(null);
   const [adminChatReplyText, setAdminChatReplyText] = useState('');
   const [isAdminSendingChat, setIsAdminSendingChat] = useState(false);
-  const [newAnnouncement, setNewAnnouncement] = useState({ title: '', content: '', priority: 'medium' as const, scheduledFor: '', expiresAt: '' });
+  const [newAnnouncement, setNewAnnouncement] = useState<{
+    title: string;
+    content: string;
+    priority: "low" | "medium" | "high";
+    scheduledFor: string;
+    expiresAt: string;
+  }>({ title: '', content: '', priority: 'medium', scheduledFor: '', expiresAt: '' });
   const [isAddingAnnouncement, setIsAddingAnnouncement] = useState(false);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');

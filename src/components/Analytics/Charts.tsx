@@ -69,7 +69,7 @@ export default function AnalyticsCharts({ transactions }: AnalyticsChartsProps) 
     const filtered = categories.map((cat, i) => ({ label: cat, value: data[i] })).filter(d => d.value > 0);
     
     return {
-      labels: filtered.length > 0 ? filtered.map(f => f.label) : categories,
+      labels: filtered.length > 0 ? filtered.map(f => f.label) : [...categories],
       values: filtered.length > 0 ? filtered.map(f => f.value) : data,
       isEmpty: filtered.length === 0 && data.every(v => v === 0)
     };

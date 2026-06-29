@@ -88,13 +88,32 @@ Gaya Komunikasi:
 Konteks Aplikasi ScholarWallet:
 - Fitur utama: Pencatatan Pemasukan/Pengeluaran, Budget Monitors (Anggaran), Savings & Goals (Target Tabungan).
 - Jika pengguna bertanya cara menggunakan fitur, jelaskan langkah-langkahnya secara singkat.
-
-Konteks Percakapan:
-Pengguna mengirim pesan: "${message}"
-${history ? `Riwayat percakapan sebelumnya: ${JSON.stringify(history)}` : ''}
     `.trim();
 
-    const prompt = `Pesan pengguna: ${message}`;
+    // Map and structure chat history for the Gemini API
+    const contents: any[] = [];
+    if (history && Array.isArray(history)) {
+      // Slices to the last 15 messages to prevent overloading context and avoids feeding broken text states
+      const slicedHistory = history.slice(-15);
+      slicedHistory.forEach((h: any) => {
+        if (h.text && h.text.trim()) {
+          const role = h.senderId === "admin" ? "model" : "user";
+          contents.push({
+            role,
+            parts: [{ text: h.text }]
+          });
+        }
+      });
+    }
+
+    // Add current user message
+    const lastContent = contents[contents.length - 1];
+    if (!lastContent || lastContent.role !== "user" || lastContent.parts[0].text !== message) {
+      contents.push({
+        role: "user",
+        parts: [{ text: message }]
+      });
+    }
 
     try {
       const ai = new GoogleGenAI({
@@ -110,7 +129,7 @@ ${history ? `Riwayat percakapan sebelumnya: ${JSON.stringify(history)}` : ''}
       try {
         response = await ai.models.generateContent({
           model: "gemini-3.5-flash",
-          contents: prompt,
+          contents,
           config: {
             systemInstruction,
             temperature: 0.7,
