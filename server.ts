@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
-import apiRouter from "./api/api-router";
+import apiApp from "./api/index";
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ const PORT = 3000;
 app.use(express.json());
 
 // API routes FIRST
-app.use("/api", apiRouter);
+app.use(apiApp);
   
   // Vite middleware for development
   async function startServer() {
