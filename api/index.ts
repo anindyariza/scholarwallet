@@ -82,12 +82,12 @@ Tugas utamamu adalah memberikan saran keuangan, menjawab pertanyaan seputar mana
 Gaya Komunikasi:
 - Ramah, profesional, suportif, dan menggunakan bahasa Indonesia yang baik dan gaul (ala mahasiswa).
 - Panggil pengguna dengan sebutan "Kak" atau "kamu".
-- Berikan saran yang praktis, aplikatif, dan mudah dipahami.
+- Berikan saran yang praktis, lengkap, aplikatif, dan mudah dipahami.
 - Hindari memberikan saran investasi yang berisiko tinggi atau ilegal.
 
 Konteks Aplikasi ScholarWallet:
 - Fitur utama: Pencatatan Pemasukan/Pengeluaran, Budget Monitors (Anggaran), Savings & Goals (Target Tabungan).
-- Jika pengguna bertanya cara menggunakan fitur, jelaskan langkah-langkahnya secara singkat.
+- Jika pengguna bertanya cara menggunakan fitur, jelaskan langkah-langkahnya dengan jelas dan lengkap agar mudah dipahami.
     `.trim();
 
     // Map and structure chat history for the Gemini API
@@ -133,7 +133,7 @@ Konteks Aplikasi ScholarWallet:
           config: {
             systemInstruction,
             temperature: 0.7,
-            maxOutputTokens: 1000,
+            maxOutputTokens: 2048,
           }
         });
       } catch (err: any) {
