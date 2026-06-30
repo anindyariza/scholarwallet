@@ -165,7 +165,7 @@ export default function AskPanel({ user }: AskPanelProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col h-[78vh] sm:h-[72vh] min-h-[500px] lg:min-h-[550px] relative">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col h-[84vh] sm:h-[80vh] lg:h-[85vh] min-h-[480px] sm:min-h-[650px] lg:min-h-[780px] relative">
       {/* Panel Header */}
       <div className="px-4 py-4 sm:px-6 sm:py-5 bg-gradient-to-r from-emerald-500/15 via-teal-500/5 to-indigo-500/10 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shadow-sm z-10 shrink-0">
         <div className="flex items-center gap-2.5 sm:gap-3">

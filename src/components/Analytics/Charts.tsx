@@ -113,7 +113,7 @@ export default function AnalyticsCharts({ transactions }: AnalyticsChartsProps) 
     return {
       labels: months.map(m => {
         const [year, month] = m.split('-');
-        return new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString('en-US', { month: 'short' });
+        return new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString('id-ID', { month: 'short' });
       }),
       income,
       expense
@@ -124,13 +124,13 @@ export default function AnalyticsCharts({ transactions }: AnalyticsChartsProps) 
     labels: chartData6Months.labels,
     datasets: [
       {
-        label: 'Income',
+        label: 'Pemasukan',
         data: chartData6Months.income,
         backgroundColor: '#10b981',
         borderRadius: 8,
       },
       {
-        label: 'Expenses',
+        label: 'Pengeluaran',
         data: chartData6Months.expense,
         backgroundColor: '#f43f5e',
         borderRadius: 8,
@@ -203,15 +203,15 @@ export default function AnalyticsCharts({ transactions }: AnalyticsChartsProps) 
           <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl mb-4">
             <BarChart3 className="w-8 h-8 text-slate-300 dark:text-slate-700" />
           </div>
-          <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">No Analytics</h3>
-          <p className="text-[10px] text-slate-500 mt-2 max-w-[200px]">Enter transactions to unlock financial insights.</p>
+          <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Tidak Ada Analisis</h3>
+          <p className="text-[10px] text-slate-500 mt-2 max-w-[200px]">Masukkan transaksi untuk membuka wawasan keuangan.</p>
         </div>
         <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center text-center h-[300px] sm:h-[400px]">
           <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl mb-4">
             <PieChart className="w-8 h-8 text-slate-300 dark:text-slate-700" />
           </div>
-          <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Awaiting Data</h3>
-          <p className="text-[10px] text-slate-500 mt-2 max-w-[200px]">Category breakdown will appear here once you log expenses.</p>
+          <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Menunggu Data</h3>
+          <p className="text-[10px] text-slate-500 mt-2 max-w-[200px]">Rincian kategori akan muncul di sini setelah Anda mencatat pengeluaran.</p>
         </div>
       </div>
     );
@@ -221,8 +221,8 @@ export default function AnalyticsCharts({ transactions }: AnalyticsChartsProps) 
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm h-[350px] sm:h-[400px] flex flex-col transition-all">
         <div>
-          <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-widest">Expense Breakdown</h3>
-          <p className="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-tight mt-1">Category Distribution</p>
+          <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-widest">Rincian Pengeluaran</h3>
+          <p className="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-tight mt-1">Distribusi Kategori</p>
         </div>
         <div key={`doughnut-${isDark}`} className="relative flex-1 mt-4 sm:mt-6">
           <Doughnut data={doughnutData} options={doughnutOptions} />
@@ -231,8 +231,8 @@ export default function AnalyticsCharts({ transactions }: AnalyticsChartsProps) 
 
       <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm h-[350px] sm:h-[400px] flex flex-col transition-all">
         <div>
-          <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-widest">Income vs Expenses</h3>
-          <p className="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-tight mt-1">6-Month Academic Cycle</p>
+          <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-50 uppercase tracking-widest">Pemasukan vs Pengeluaran</h3>
+          <p className="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-tight mt-1">Siklus Akademik 6 Bulan</p>
         </div>
         <div key={`bar-${isDark}`} className="relative flex-1 mt-4 sm:mt-6">
           <Bar data={barData} options={barOptions} />

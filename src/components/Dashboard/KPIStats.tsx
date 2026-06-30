@@ -20,7 +20,7 @@ export default function KPIStats({ balance, income, expenses }: KPIStatsProps) {
 
   const stats = [
     {
-      label: 'Net Liquid Balance',
+      label: 'Saldo Bersih',
       value: formatCurrency(balance),
       icon: Wallet,
       color: 'slate',
@@ -28,7 +28,7 @@ export default function KPIStats({ balance, income, expenses }: KPIStatsProps) {
       isPositive: true,
     },
     {
-      label: 'Total Monthly Income',
+      label: 'Pemasukan Bulanan',
       value: formatCurrency(income),
       icon: TrendingUp,
       color: 'emerald',
@@ -36,7 +36,7 @@ export default function KPIStats({ balance, income, expenses }: KPIStatsProps) {
       isPositive: true,
     },
     {
-      label: 'Total Monthly Expenses',
+      label: 'Pengeluaran Bulanan',
       value: formatCurrency(expenses),
       icon: TrendingDown,
       color: 'rose',

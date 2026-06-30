@@ -28,10 +28,11 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
     setLoading(true);
     setError(null);
     try {
-      if (!userId) throw new Error('User not authenticated. Please log in again.');
+      if (!userId) throw new Error('Pengguna tidak terautentikasi. Silakan masuk kembali.');
       
-      const val = parseFloat(amount);
-      if (isNaN(val) || val <= 0) throw new Error('Please enter a valid amount greater than zero.');
+      const cleanAmount = amount.replace(/\./g, '');
+      const val = parseFloat(cleanAmount);
+      if (isNaN(val) || val <= 0) throw new Error('Masukkan nominal jumlah yang valid dan lebih dari nol.');
 
       // Add a timeout to prevent infinite loading if Firestore is hanging
       const savePromise = addTransaction({
@@ -45,7 +46,7 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
       });
 
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Connection timed out. We are having trouble reaching the database. Please check your internet or try refreshing.')), 20000)
+        setTimeout(() => reject(new Error('Koneksi terputus. Gagal terhubung ke database. Silakan periksa koneksi internet Anda atau muat ulang halaman.')), 20000)
       );
 
       await Promise.race([savePromise, timeoutPromise]);
@@ -54,7 +55,7 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
       onClose();
     } catch (err: any) {
       console.error('Failed to add transaction:', err);
-      setError(err.message || 'An unexpected error occurred while saving.');
+      setError(err.message || 'Terjadi kesalahan saat menyimpan transaksi.');
     } finally {
       setLoading(false);
     }
@@ -85,8 +86,8 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
           >
             <div className="flex items-center justify-between p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900/50">
               <div className="space-y-1">
-                <h2 className="text-xl sm:text-2xl font-display font-black text-slate-900 dark:text-white tracking-tighter">Financial Entry</h2>
-                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider sm:tracking-[0.2em]">Transaction Ledger</p>
+                <h2 className="text-xl sm:text-2xl font-display font-black text-slate-900 dark:text-white tracking-tighter">Catat Transaksi</h2>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider sm:tracking-[0.2em]">Buku Transaksi</p>
               </div>
               <button 
                 onClick={onClose} 
@@ -106,7 +107,7 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
                     type === 'expense' ? "bg-rose-500 text-white shadow-xl shadow-rose-500/20" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   )}
                 >
-                  Expense
+                  Pengeluaran
                 </button>
                 <button 
                   type="button"
@@ -116,28 +117,35 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
                     type === 'income' ? "bg-emerald-500 text-white dark:text-slate-950 shadow-xl shadow-emerald-500/20" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   )}
                 >
-                  Income
+                  Pemasukan
                 </button>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Amount</label>
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Jumlah</label>
                   <div className="relative group">
                     <Banknote className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 group-focus-within:text-emerald-500 transition-colors" />
                     <input 
-                      type="number" 
+                      type="text" 
                       required
                       value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      placeholder="0.00"
+                      onChange={(e) => {
+                        const cleanVal = e.target.value.replace(/\D/g, '');
+                        if (cleanVal) {
+                          setAmount(new Intl.NumberFormat('id-ID').format(parseInt(cleanVal, 10)));
+                        } else {
+                          setAmount('');
+                        }
+                      }}
+                      placeholder="0"
                       className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-lg font-bold outline-none focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition-all text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Date</label>
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Tanggal</label>
                   <div className="relative group">
                     <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 group-focus-within:text-emerald-500 transition-colors" />
                     <input 
@@ -153,7 +161,7 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Category</label>
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Kategori</label>
                   <div className="relative group">
                     <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 pointer-events-none" />
                     <select 
@@ -167,7 +175,7 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Payment Method</label>
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Metode Pembayaran</label>
                   <div className="relative group">
                     <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 pointer-events-none" />
                     <select 
@@ -175,22 +183,22 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
                       onChange={(e) => setPaymentMethod(e.target.value as any)}
                       className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition-all text-slate-900 dark:text-white appearance-none text-sm font-bold"
                     >
-                      <option value="Cash" className="bg-white dark:bg-slate-900">Physical Cash</option>
-                      <option value="Debit" className="bg-white dark:bg-slate-900">Institutional Debit</option>
-                      <option value="E-Wallet" className="bg-white dark:bg-slate-900">E-Wallet (Gopay/OVO)</option>
+                      <option value="Cash" className="bg-white dark:bg-slate-900">Uang Tunai</option>
+                      <option value="Debit" className="bg-white dark:bg-slate-900">Debit Rekening</option>
+                      <option value="E-Wallet" className="bg-white dark:bg-slate-900">E-Wallet (GoPay/OVO/Dana)</option>
                     </select>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Reference Notes</label>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Catatan Deskripsi</label>
                 <div className="relative group">
                   <Type className="absolute left-4 top-6 w-5 h-5 text-slate-400 dark:text-slate-500 group-focus-within:text-emerald-500 transition-colors" />
                   <textarea 
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Provide context for this transaction..."
+                    placeholder="Tulis catatan atau deskripsi transaksi..."
                     rows={3}
                     className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition-all text-slate-900 dark:text-white resize-none text-sm font-medium placeholder:text-slate-300 dark:placeholder:text-slate-700"
                   />
@@ -212,7 +220,7 @@ export default function TransactionModal({ isOpen, onClose, userId }: Transactio
                   {loading ? (
                     <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <><Plus className="w-6 h-6" /> Commit Transaction</>
+                    <><Plus className="w-6 h-6" /> Simpan Transaksi</>
                   )}
                 </button>
               </div>

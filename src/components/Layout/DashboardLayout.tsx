@@ -45,10 +45,10 @@ export default function DashboardLayout({
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'transactions', label: 'Transactions', icon: Receipt },
-    { id: 'analytics', label: 'Analytics', icon: PieChartIcon },
+    { id: 'transactions', label: 'Transaksi', icon: Receipt },
+    { id: 'analytics', label: 'Analisis', icon: PieChartIcon },
     { id: 'ask', label: 'Ask', icon: MessageSquare },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'settings', label: 'Pengaturan', icon: Settings },
   ];
 
   return (
@@ -91,7 +91,7 @@ export default function DashboardLayout({
             <button 
               onClick={onFeedbackClick}
               className="relative p-3 text-slate-400 hover:text-indigo-500 hover:bg-indigo-500/5 rounded-2xl transition-all group"
-              title="Kirim Masukan & AI"
+              title="Feedback"
             >
               <Megaphone className="w-6 h-6" />
               {hasAdminReply && (
@@ -122,7 +122,10 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 lg:ml-20 pb-40 lg:pb-12 min-w-0 overflow-x-hidden">
+      <main className={cn(
+        "flex-1 lg:ml-20 min-w-0 overflow-x-hidden",
+        activeTab === 'ask' ? "pb-6 lg:pb-12" : "pb-40 lg:pb-12"
+      )}>
         {/* Mobile Header */}
         <header className="lg:hidden h-16 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-5 sticky top-0 z-40">
           <button 
@@ -221,7 +224,7 @@ export default function DashboardLayout({
                           </span>
                         )}
                       </div>
-                      <span>Kirim Masukan & AI</span>
+                      <span>Feedback</span>
                     </button>
                   )}
 
@@ -261,22 +264,26 @@ export default function DashboardLayout({
       </main>
 
       {/* Mobile Bottom Navigation - Centered Plus Button */}
-      <div className="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
-        <button 
-          onClick={onAddClick}
-          className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white dark:text-slate-950 shadow-2xl shadow-emerald-500/40 active:scale-90 transition-all border-4 border-white dark:border-slate-900"
-        >
-          <Plus className="w-10 h-10" />
-        </button>
-      </div>
+      {activeTab !== 'ask' && (
+        <div className="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+          <button 
+            onClick={onAddClick}
+            className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white dark:text-slate-950 shadow-2xl shadow-emerald-500/40 active:scale-90 transition-all border-4 border-white dark:border-slate-900"
+          >
+            <Plus className="w-10 h-10" />
+          </button>
+        </div>
+      )}
 
       {/* Desktop Floating Action Button */}
-      <button 
-        onClick={onAddClick}
-        className="hidden lg:flex fixed bottom-12 right-12 w-16 h-16 bg-emerald-500 hover:bg-emerald-400 rounded-2xl items-center justify-center text-white dark:text-slate-950 shadow-2xl shadow-emerald-500/40 active:scale-95 transition-all z-50 group rotate-45 hover:rotate-0 duration-500"
-      >
-        <Plus className="w-10 h-10 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
-      </button>
+      {activeTab !== 'ask' && (
+        <button 
+          onClick={onAddClick}
+          className="hidden lg:flex fixed bottom-12 right-12 w-16 h-16 bg-emerald-500 hover:bg-emerald-400 rounded-2xl items-center justify-center text-white dark:text-slate-950 shadow-2xl shadow-emerald-500/40 active:scale-95 transition-all z-50 group rotate-45 hover:rotate-0 duration-500"
+        >
+          <Plus className="w-10 h-10 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
+        </button>
+      )}
     </div>
   );
 }

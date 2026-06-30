@@ -35,8 +35,9 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
     setLoading(true);
     setError(null);
     try {
-      const target = Number(newGoal.targetAmount);
-      if (isNaN(target) || target <= 0) throw new Error('Invalid target amount');
+      const cleanTarget = newGoal.targetAmount.replace(/\./g, '');
+      const target = Number(cleanTarget);
+      if (isNaN(target) || target <= 0) throw new Error('Batas target nominal tidak valid');
 
       const savePromise = addSavingGoal({
         userId,
@@ -48,7 +49,7 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
       });
 
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Request timed out. Please check your connection.')), 20000)
+        setTimeout(() => reject(new Error('Koneksi terputus. Silakan coba lagi.')), 20000)
       );
 
       await Promise.race([savePromise, timeoutPromise]);
@@ -57,14 +58,14 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
       setNewGoal({ title: '', targetAmount: '', currentAmount: '0', deadline: '', category: 'Travel' });
     } catch (err: any) {
       console.error('Failed to add saving goal:', err);
-      setError(err.message || 'Failed to create goal');
+      setError(err.message || 'Gagal membuat target');
     } finally {
       setLoading(false);
     }
   };
 
   const handleUpdateProgress = async (goalId: string, current: number, target: number) => {
-    const amount = prompt('Enter new current amount:', current.toString());
+    const amount = prompt('Masukkan jumlah tabungan saat ini:', current.toString());
     if (amount !== null) {
       const numAmount = Number(amount);
       if (!isNaN(numAmount)) {
@@ -84,9 +85,9 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
             <div className="p-2 bg-indigo-500/10 rounded-xl text-indigo-500 dark:text-indigo-400">
               <Target className="w-5 h-5" />
             </div>
-            <h2 className="text-lg font-display font-bold text-slate-900 dark:text-white tracking-tight">Saving Goals</h2>
+            <h2 className="text-lg font-display font-bold text-slate-900 dark:text-white tracking-tight">Target Tabungan</h2>
           </div>
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider sm:tracking-[0.2em] ml-11">Planning your future</p>
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider sm:tracking-[0.2em] ml-11">Merencanakan masa depan Anda</p>
         </div>
         <button 
           onClick={() => setIsAdding(true)}
@@ -100,7 +101,7 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
         {goals.length === 0 && !isAdding && (
           <div className="flex flex-col items-center justify-center h-48 space-y-4 opacity-30">
             <TrendingUp className="w-12 h-12 text-slate-300 dark:text-slate-400" />
-            <p className="text-xs font-black uppercase tracking-widest text-slate-300 dark:text-slate-400">No saving goals yet</p>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-300 dark:text-slate-400">Belum ada target tabungan</p>
           </div>
         )}
 
@@ -114,10 +115,10 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
             >
               <form onSubmit={handleAddGoal} className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Goal Title</label>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nama Target</label>
                   <input 
                     type="text" 
-                    placeholder="e.g. New Macbook Pro" 
+                    placeholder="misal: Macbook Pro Baru" 
                     required
                     value={newGoal.title}
                     onChange={e => setNewGoal({...newGoal, title: e.target.value})}
@@ -128,16 +129,26 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Target (Rp)</label>
                     <input 
-                      type="number" 
+                      type="text" 
                       placeholder="0" 
                       required
                       value={newGoal.targetAmount}
-                      onChange={e => setNewGoal({...newGoal, targetAmount: e.target.value})}
+                      onChange={e => {
+                        const cleanVal = e.target.value.replace(/\D/g, '');
+                        if (cleanVal) {
+                          setNewGoal({
+                            ...newGoal,
+                            targetAmount: new Intl.NumberFormat('id-ID').format(parseInt(cleanVal, 10))
+                          });
+                        } else {
+                          setNewGoal({ ...newGoal, targetAmount: '' });
+                        }
+                      }}
                       className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm text-slate-900 dark:text-white focus:border-indigo-500 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Deadline</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Tenggat Waktu</label>
                     <input 
                       type="date" 
                       required
@@ -161,7 +172,7 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
                     onClick={() => setIsAdding(false)}
                     className="flex-1 px-4 py-3 text-xs font-black text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors uppercase tracking-widest disabled:opacity-50"
                   >
-                    Cancel
+                    Batal
                   </button>
                   <button 
                     type="submit"
@@ -171,7 +182,7 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
                     {loading ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
-                      'Create Goal'
+                      'Buat Target'
                     )}
                   </button>
                 </div>
@@ -233,8 +244,8 @@ export default function SavingGoals({ userId, goals }: SavingGoalsProps) {
                     />
                   </div>
                   <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-600">
-                    <span>{Math.round(progress)}% Complete</span>
-                    {isCompleted && <span className="text-emerald-500 animate-pulse">Goal Achieved!</span>}
+                    <span>{Math.round(progress)}% Selesai</span>
+                    {isCompleted && <span className="text-emerald-500 animate-pulse">Target Tercapai!</span>}
                   </div>
                 </div>
               </motion.div>

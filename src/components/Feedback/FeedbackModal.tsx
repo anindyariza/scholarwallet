@@ -54,7 +54,7 @@ export default function FeedbackModal({ isOpen, onClose, userId, userEmail, user
         setActiveTab('history');
       }, 2000);
     } catch (err: any) {
-      setError('Failed to send feedback. Please try again.');
+      setError('Gagal mengirim masukan. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
@@ -93,7 +93,7 @@ export default function FeedbackModal({ isOpen, onClose, userId, userEmail, user
                   <Megaphone className="w-6 h-6 text-indigo-400" />
                   Feedback
                 </h2>
-                <p className="text-slate-400 text-sm mt-1 font-medium">Help us improve your experience</p>
+                <p className="text-slate-400 text-sm mt-1 font-medium">Bantu kami meningkatkan pengalaman Anda</p>
               </div>
 
               <div className="flex p-1 bg-slate-950 rounded-2xl border border-slate-800">
@@ -105,7 +105,7 @@ export default function FeedbackModal({ isOpen, onClose, userId, userEmail, user
                       : 'text-slate-500 hover:text-slate-300'
                   }`}
                 >
-                  New Feedback
+                  Kirim Feedback
                 </button>
                 <button
                   onClick={() => setActiveTab('history')}
@@ -115,7 +115,7 @@ export default function FeedbackModal({ isOpen, onClose, userId, userEmail, user
                       : 'text-slate-500 hover:text-slate-300'
                   }`}
                 >
-                  My Feedbacks
+                  Feedback Saya
                 </button>
               </div>
             </div>
@@ -132,37 +132,45 @@ export default function FeedbackModal({ isOpen, onClose, userId, userEmail, user
                       <CheckCircle2 className="w-8 h-8 text-emerald-400" />
                     </div>
                     <div className="text-center">
-                      <h3 className="text-lg font-bold text-white">Thank You!</h3>
-                      <p className="text-slate-400 text-sm">Your feedback has been received.</p>
+                      <h3 className="text-lg font-bold text-white">Terima Kasih!</h3>
+                      <p className="text-slate-400 text-sm">Masukan Anda telah berhasil kami terima.</p>
                     </div>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="flex p-1 bg-slate-950 rounded-2xl border border-slate-800">
-                      {(['Suggestion', 'Critique'] as const).map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setType(t)}
-                          className={`flex-1 py-2 text-xs font-black rounded-xl transition-all uppercase tracking-widest ${
-                            type === t 
-                              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
-                              : 'text-slate-500 hover:text-slate-300'
-                          }`}
-                        >
-                          {t}
-                        </button>
-                      ))}
+                      <button
+                        type="button"
+                        onClick={() => setType('Suggestion')}
+                        className={`flex-1 py-2 text-xs font-black rounded-xl transition-all uppercase tracking-widest ${
+                          type === 'Suggestion' 
+                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
+                            : 'text-slate-500 hover:text-slate-300'
+                        }`}
+                      >
+                        Saran
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setType('Critique')}
+                        className={`flex-1 py-2 text-xs font-black rounded-xl transition-all uppercase tracking-widest ${
+                          type === 'Critique' 
+                            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
+                            : 'text-slate-500 hover:text-slate-300'
+                        }`}
+                      >
+                        Kritik / Kendala
+                      </button>
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">
-                        Message
+                        Pesan
                       </label>
                       <textarea
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        placeholder={type === 'Suggestion' ? "What feature would you like to see?" : "What's not working for you?"}
+                        placeholder={type === 'Suggestion' ? "Fitur apa yang ingin Anda lihat selanjutnya?" : "Apa yang kurang berfungsi dengan baik?"}
                         className="w-full h-32 bg-slate-950 border border-slate-800 rounded-3xl p-5 text-sm text-white placeholder:text-slate-600 outline-none focus:border-indigo-500/50 transition-all resize-none"
                       />
                     </div>
@@ -184,7 +192,7 @@ export default function FeedbackModal({ isOpen, onClose, userId, userEmail, user
                       ) : (
                         <>
                           <Send className="w-4 h-4" />
-                          Send Feedback
+                          Kirim Feedback
                         </>
                       )}
                     </button>
@@ -195,7 +203,7 @@ export default function FeedbackModal({ isOpen, onClose, userId, userEmail, user
                   {userFeedbacks.length === 0 ? (
                     <div className="text-center py-12">
                       <Megaphone className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-                      <p className="text-slate-500 font-medium">You haven't submitted any feedback yet.</p>
+                      <p className="text-slate-500 font-medium">Anda belum mengirimkan masukan apa pun.</p>
                     </div>
                   ) : (
                     userFeedbacks.map((fb) => (
@@ -208,11 +216,11 @@ export default function FeedbackModal({ isOpen, onClose, userId, userEmail, user
                                 ? 'bg-amber-500/10 text-amber-400'
                                 : 'bg-emerald-500/10 text-emerald-400'
                           }`}>
-                            {fb.type}
+                            {fb.type === 'Critique' ? 'Kritik' : fb.type === 'Suggestion' ? 'Saran' : fb.type}
                           </span>
                           <span className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                             <Clock className="w-3 h-3" />
-                            {fb.createdAt?.toDate ? fb.createdAt.toDate().toLocaleDateString() : 'Just now'}
+                            {fb.createdAt?.toDate ? fb.createdAt.toDate().toLocaleDateString('id-ID') : 'Baru saja'}
                           </span>
                         </div>
                         <p className="text-sm text-slate-300 leading-relaxed mb-4">{fb.content}</p>
@@ -221,14 +229,14 @@ export default function FeedbackModal({ isOpen, onClose, userId, userEmail, user
                           <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4">
                             <div className="flex items-center gap-2 mb-2">
                               <Shield className="w-4 h-4 text-indigo-400" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Admin Reply</span>
+                              <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Balasan Admin</span>
                             </div>
                             <p className="text-sm text-indigo-200 leading-relaxed">{fb.adminReply}</p>
                           </div>
                         ) : (
                           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
                             <div className="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse" />
-                            Waiting for reply
+                            Menunggu balasan
                           </div>
                         )}
                       </div>

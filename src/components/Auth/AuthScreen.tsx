@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { LogIn, UserPlus, Mail, Lock, ShieldCheck, Moon, Sun } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, ShieldCheck, Moon, Sun, Eye, EyeOff } from 'lucide-react';
 import { loginWithGoogle, registerWithEmail, loginWithEmail } from '../../firebase/services/auth.service';
 import { createUserProfile, getEmailByUsername, isUsernameAvailable } from '../../firebase/services/db.service';
 import { cn } from '../../lib/utils';
@@ -15,6 +15,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
   const [identifier, setIdentifier] = useState(''); // email or username
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -29,22 +30,22 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
 
     if (isLogin) {
       if (!identifier) {
-        setError('Please enter your email or username.');
+        setError('Silakan masukkan email atau username Anda.');
         return;
       }
     } else {
       if (!isEmail(identifier)) {
-        setError('Please use a valid email address.');
+        setError('Silakan masukkan alamat email yang valid.');
         return;
       }
       if (!username || username.length < 3) {
-        setError('Username must be at least 3 characters long.');
+        setError('Username minimal harus 3 karakter.');
         return;
       }
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long.');
+      setError('Password minimal harus 8 karakter.');
       return;
     }
 
@@ -56,7 +57,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
           // It's a username, look up the email
           const foundEmail = await getEmailByUsername(identifier);
           if (!foundEmail) {
-            throw new Error('Username not found.');
+            throw new Error('Username tidak ditemukan.');
           }
           loginEmail = foundEmail;
         }
@@ -65,7 +66,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
         // Registering
         const isAvailable = await isUsernameAvailable(username);
         if (!isAvailable) {
-          throw new Error('Username already taken.');
+          throw new Error('Username sudah digunakan.');
         }
 
         const { user } = await registerWithEmail(identifier, password);
@@ -80,7 +81,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
     } catch (err: any) {
       console.error('Auth error:', err);
       if (err.code === 'auth/operation-not-allowed') {
-        setError('Login with Email/Password is currently disabled in the Firebase Console. Please enable the "Email/Password" provider or use the Google Login button below.');
+        setError('Login dengan Email/Password saat ini dinonaktifkan di Firebase Console. Silakan aktifkan provider "Email/Password" atau gunakan tombol Login Google di bawah.');
       } else {
         setError(err.message);
       }
@@ -125,7 +126,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
           </div>
           <h1 className="text-3xl sm:text-4xl font-display font-black text-slate-900 dark:text-white tracking-tighter">ScholarWallet</h1>
           <p className="text-slate-500 text-xs sm:text-sm text-center mt-3 font-medium max-w-[240px] leading-relaxed">
-            The intelligent financial companion for university students.
+            Pendamping keuangan cerdas untuk mahasiswa perguruan tinggi.
           </p>
         </div>
 
@@ -137,7 +138,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
               isLogin ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xl" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
             )}
           >
-            Login
+            Masuk
           </button>
           <button 
             onClick={() => setIsLogin(false)}
@@ -146,14 +147,14 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
               !isLogin ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xl" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
             )}
           >
-            Register
+            Daftar
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
           <div className="space-y-2">
             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
-              {isLogin ? 'Email or Username' : 'Email Address'}
+              {isLogin ? 'Email atau Username' : 'Alamat Email'}
             </label>
             <div className="relative group">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 group-focus-within:text-emerald-500 transition-colors" />
@@ -162,7 +163,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
                 required
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder={isLogin ? "email@edu or username" : "name@student.edu"}
+                placeholder={isLogin ? "email@edu atau username" : "nama@mahasiswa.edu"}
                 className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm outline-none focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition-all text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600"
               />
             </div>
@@ -174,7 +175,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
               animate={{ opacity: 1, height: 'auto' }}
               className="space-y-2"
             >
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Unique Username</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Username Unik</label>
               <div className="relative group">
                 <UserPlus className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 group-focus-within:text-emerald-500 transition-colors" />
                 <input 
@@ -182,7 +183,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s/g, ''))}
-                  placeholder="choose_a_username"
+                  placeholder="pilih_username_anda"
                   className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm outline-none focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition-all text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600"
                 />
               </div>
@@ -194,13 +195,20 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500 group-focus-within:text-emerald-500 transition-colors" />
               <input 
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm outline-none focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition-all text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600"
+                className="w-full pl-12 pr-12 py-3.5 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm outline-none focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition-all text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
           </div>
 
@@ -225,9 +233,9 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
             {loading ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : isLogin ? (
-              <><LogIn className="w-5 h-5" /> Login</>
+              <><LogIn className="w-5 h-5" /> Masuk Sesi</>
             ) : (
-              <><UserPlus className="w-5 h-5" /> Create Account</>
+              <><UserPlus className="w-5 h-5" /> Buat Akun Baru</>
             )}
           </button>
         </form>
@@ -237,14 +245,14 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
             <span className="w-full border-t border-slate-200 dark:border-slate-800"></span>
           </div>
           <div className="relative flex justify-center text-[10px] uppercase">
-            <span className="bg-white dark:bg-slate-900 px-4 text-slate-400 dark:text-slate-500 font-black tracking-[0.2em]">Institutional SSO</span>
+            <span className="bg-white dark:bg-slate-900 px-4 text-slate-400 dark:text-slate-500 font-black tracking-[0.2em]">SSO Institusi</span>
           </div>
         </div>
 
         <button 
           onClick={handleGoogleSignIn}
           disabled={loading}
-          className="w-full py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-2xl font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-4 active:scale-[0.98] text-sm group"
+          className="w-full py-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-2xl font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-4 active:scale-[0.98] text-sm group"
         >
           <svg className="w-6 h-6 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -252,7 +260,7 @@ export default function AuthScreen({ isDarkMode, toggleDarkMode }: AuthScreenPro
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
           </svg>
-          Google Workspace
+          Google Workspace mah.
         </button>
       </motion.div>
     </div>

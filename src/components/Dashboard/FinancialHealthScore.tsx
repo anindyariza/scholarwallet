@@ -24,18 +24,18 @@ export default function FinancialHealthScore({ income, expenses, budgetsReached 
 
   const totalScore = Math.round(savingsScore + coverageScore + disciplineScore);
 
-  let status = 'Good';
+  let status = 'Sangat Baik';
   let color = 'text-emerald-400';
   let bgColor = 'bg-emerald-400';
   let icon = <ShieldCheck className="w-5 h-5" />;
 
   if (totalScore < 40) {
-    status = 'Needs Attention';
+    status = 'Butuh Perhatian';
     color = 'text-rose-400';
     bgColor = 'bg-rose-400';
     icon = <AlertCircle className="w-5 h-5" />;
   } else if (totalScore < 70) {
-    status = 'Stable';
+    status = 'Stabil';
     color = 'text-amber-400';
     bgColor = 'bg-amber-400';
     icon = <Activity className="w-5 h-5" />;
@@ -54,7 +54,7 @@ export default function FinancialHealthScore({ income, expenses, budgetsReached 
           <div className={cn("p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800", color)}>
             {icon}
           </div>
-          Financial Health
+          Kesehatan Keuangan
         </div>
         <div className="flex items-baseline gap-2">
           <span className={cn("text-4xl sm:text-5xl font-display font-black tracking-tighter", color)}>{totalScore}</span>

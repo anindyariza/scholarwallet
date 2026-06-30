@@ -33,7 +33,7 @@ export default function TransactionList({ transactions }: TransactionListProps) 
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
+    return new Date(dateStr).toLocaleDateString('id-ID', {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
@@ -44,8 +44,8 @@ export default function TransactionList({ transactions }: TransactionListProps) 
     <div className="bento-card overflow-hidden w-full">
       <div className="px-5 py-5 sm:px-8 sm:py-6 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <h2 className="text-lg font-display font-bold text-slate-900 dark:text-white tracking-tight">Recent Transactions</h2>
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider sm:tracking-[0.2em] truncate">Live feed of your activity</p>
+          <h2 className="text-lg font-display font-bold text-slate-900 dark:text-white tracking-tight">Transaksi Terbaru</h2>
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider sm:tracking-[0.2em] truncate">Aktivitas terkini Anda</p>
         </div>
         
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
@@ -53,7 +53,7 @@ export default function TransactionList({ transactions }: TransactionListProps) 
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <input 
               type="text"
-              placeholder="Search activity..."
+              placeholder="Cari aktivitas..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs outline-none focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition-all text-slate-900 dark:text-slate-50 placeholder:text-slate-400 dark:placeholder:text-slate-600"
@@ -65,9 +65,9 @@ export default function TransactionList({ transactions }: TransactionListProps) 
               onChange={(e) => setFilterType(e.target.value as any)}
               className="w-full sm:w-auto pl-4 pr-10 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs outline-none focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-800 transition-all text-slate-900 dark:text-slate-50 appearance-none font-bold uppercase tracking-widest cursor-pointer"
             >
-              <option value="all">All</option>
-              <option value="income">Income</option>
-              <option value="expense">Expenses</option>
+              <option value="all">Semua</option>
+              <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
             </select>
             <Filter className="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 pointer-events-none" />
           </div>
@@ -78,10 +78,10 @@ export default function TransactionList({ transactions }: TransactionListProps) 
         <table className="w-full text-left border-separate border-spacing-0">
           <thead className="bg-slate-50/50 dark:bg-slate-800/20 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
             <tr>
-              <th className="px-8 py-4 font-black">Transaction Details</th>
-              <th className="px-8 py-4 font-black">Category</th>
-              <th className="px-8 py-4 font-black">Date</th>
-              <th className="px-8 py-4 font-black text-right">Amount</th>
+              <th className="px-8 py-4 font-black">Detail Transaksi</th>
+              <th className="px-8 py-4 font-black">Kategori</th>
+              <th className="px-8 py-4 font-black">Tanggal</th>
+              <th className="px-8 py-4 font-black text-right">Jumlah</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
@@ -124,7 +124,7 @@ export default function TransactionList({ transactions }: TransactionListProps) 
                       <span className="text-slate-600 dark:text-slate-300 text-xs font-semibold">{formatDate(t.date)}</span>
                       <span className="text-[10px] text-slate-500 dark:text-slate-600 font-medium uppercase mt-0.5 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
-                        Today
+                        Hari Ini
                       </span>
                     </div>
                   </td>
@@ -141,7 +141,7 @@ export default function TransactionList({ transactions }: TransactionListProps) 
                   <td colSpan={4} className="px-8 py-20 text-center">
                     <div className="flex flex-col items-center justify-center space-y-3 opacity-20">
                       <Receipt className="w-12 h-12 text-slate-400" />
-                      <p className="text-xs font-black uppercase tracking-widest text-slate-400">No records found</p>
+                      <p className="text-xs font-black uppercase tracking-widest text-slate-400">Tidak ada riwayat ditemukan</p>
                     </div>
                   </td>
                 </tr>
@@ -191,7 +191,7 @@ export default function TransactionList({ transactions }: TransactionListProps) 
             </motion.div>
           )) : (
             <div className="py-20 text-center">
-              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No activity found</p>
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Tidak ada aktivitas ditemukan</p>
             </div>
           )}
         </AnimatePresence>
@@ -200,7 +200,7 @@ export default function TransactionList({ transactions }: TransactionListProps) 
       {totalPages > 1 && (
         <div className="px-8 py-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900/50 backdrop-blur-sm">
           <p className="text-[10px] text-slate-500 uppercase font-black tracking-[0.2em]">
-            Page <span className="text-emerald-600 dark:text-emerald-400">{currentPage}</span> <span className="opacity-30">/</span> <span className="text-slate-700 dark:text-slate-300">{totalPages}</span>
+            Halaman <span className="text-emerald-600 dark:text-emerald-400">{currentPage}</span> <span className="opacity-30">/</span> <span className="text-slate-700 dark:text-slate-300">{totalPages}</span>
           </p>
           <div className="flex items-center gap-3">
             <button 

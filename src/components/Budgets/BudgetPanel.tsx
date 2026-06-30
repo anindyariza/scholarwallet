@@ -60,7 +60,8 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
   };
 
   const handleSaveBudget = async (id: string, category: string, monthYear: string, val: string) => {
-    if (!val || isNaN(parseFloat(val)) || parseFloat(val) <= 0) {
+    const cleanVal = val.replace(/\./g, '');
+    if (!cleanVal || isNaN(parseFloat(cleanVal)) || parseFloat(cleanVal) <= 0) {
       showToastMessage('Masukkan batas budget yang valid!', 'error');
       return;
     }
@@ -69,7 +70,7 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
       await upsertBudget({
         userId,
         category,
-        limitAmount: parseFloat(val),
+        limitAmount: parseFloat(cleanVal),
         monthYear
       });
       setEditingBudgetId(null);
@@ -99,7 +100,8 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
       showToastMessage('Kategori tidak boleh kosong!', 'error');
       return;
     }
-    if (!newLimit || isNaN(parseFloat(newLimit)) || parseFloat(newLimit) <= 0) {
+    const cleanLimit = newLimit.replace(/\./g, '');
+    if (!cleanLimit || isNaN(parseFloat(cleanLimit)) || parseFloat(cleanLimit) <= 0) {
       showToastMessage('Masukkan batas limit budget yang valid!', 'error');
       return;
     }
@@ -117,7 +119,7 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
       await upsertBudget({
         userId,
         category: finalCategory,
-        limitAmount: parseFloat(newLimit),
+        limitAmount: parseFloat(cleanLimit),
         monthYear: newMonthYear
       });
       setIsAdding(false);
@@ -334,10 +336,17 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Batas Limit (IDR)</label>
                 <input 
-                  type="number"
-                  placeholder="Batas nominal, misal: 500000"
+                  type="text"
+                  placeholder="Batas nominal, misal: 500.000"
                   value={newLimit}
-                  onChange={(e) => setNewLimit(e.target.value)}
+                  onChange={(e) => {
+                    const cleanVal = e.target.value.replace(/\D/g, '');
+                    if (cleanVal) {
+                      setNewLimit(new Intl.NumberFormat('id-ID').format(parseInt(cleanVal, 10)));
+                    } else {
+                      setNewLimit('');
+                    }
+                  }}
                   className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs outline-none focus:border-emerald-500 text-slate-900 dark:text-white font-bold"
                   required
                 />
@@ -443,7 +452,7 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
                       Penggunaan: <span className="text-slate-700 dark:text-slate-300 font-extrabold">{formatCurrency(spent)}</span>
                     </p>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest">
-                      Batas Batas: <span className="text-slate-800 dark:text-slate-200 font-black">{formatCurrency(limit)}</span>
+                      Batas Budget: <span className="text-slate-800 dark:text-slate-200 font-black">{formatCurrency(limit)}</span>
                     </p>
                   </div>
                 </div>
@@ -462,7 +471,7 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
                   {/* Right Side: Edit control state */}
                   {!isEditing ? (
                     <button 
-                      onClick={() => { setEditingBudgetId(budget.id || null); setEditValue(limit.toString()); }}
+                      onClick={() => { setEditingBudgetId(budget.id || null); setEditValue(new Intl.NumberFormat('id-ID').format(limit)); }}
                       className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-black text-emerald-600 dark:text-emerald-500 hover:bg-emerald-500/10 transition-all uppercase tracking-widest"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
@@ -471,10 +480,17 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
                   ) : (
                     <div className="flex items-center gap-1.5 animate-in fade-in slide-in-from-right-1">
                       <input 
-                        type="number"
+                        type="text"
                         value={editValue}
                         autoFocus
-                        onChange={(e) => setEditValue(e.target.value)}
+                        onChange={(e) => {
+                          const cleanVal = e.target.value.replace(/\D/g, '');
+                          if (cleanVal) {
+                            setEditValue(new Intl.NumberFormat('id-ID').format(parseInt(cleanVal, 10)));
+                          } else {
+                            setEditValue('');
+                          }
+                        }}
                         className="w-20 px-2 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-bold outline-none text-slate-900 dark:text-white focus:border-emerald-500"
                         placeholder="Limit baru"
                       />

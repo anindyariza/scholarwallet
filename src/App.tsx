@@ -117,9 +117,9 @@ export default function App() {
           .reduce((acc, t) => acc + t.amount, 0);
         
         if (spent > budget.limitAmount) {
-          setToast({ message: `Budget exceeded for ${budget.category}!`, type: 'warning' });
+          setToast({ message: `Batas budget terlampaui untuk kategori ${budget.category}!`, type: 'warning' });
         } else if (spent > budget.limitAmount * 0.85) {
-          setToast({ message: `You've used 85% of your ${budget.category} budget.`, type: 'info' });
+          setToast({ message: `Anda telah menggunakan 85% batas budget kategori ${budget.category}.`, type: 'info' });
         }
       }
     });
@@ -232,8 +232,8 @@ export default function App() {
             <div className="space-y-6 sm:space-y-8">
               <div className="flex items-center justify-between px-2">
                 <div>
-                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Financial Analytics</h3>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-tight mt-1">Live data visualization</p>
+                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Analisis Keuangan</h3>
+                  <p className="text-[10px] text-slate-500 uppercase tracking-tight mt-1">Visualisasi data langsung</p>
                 </div>
               </div>
               <AnalyticsCharts transactions={transactions} />
@@ -323,11 +323,18 @@ export default function App() {
         className="w-full"
       >
         <header className="mb-6 sm:mb-8 px-1 sm:px-0">
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-50 tracking-tight capitalize italic uppercase">{activeTab === 'dashboard' ? 'Selamat Datang' : `${activeTab} Control`}</h1>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-50 tracking-tight capitalize italic uppercase">
+            {activeTab === 'dashboard' ? 'Selamat Datang' :
+             activeTab === 'transactions' ? 'Transaksi Keuangan' :
+             activeTab === 'analytics' ? 'Analisis Keuangan' :
+             activeTab === 'ask' ? 'Ask Admin' :
+             activeTab === 'settings' ? 'Pengaturan Akun' :
+             `${activeTab} Control`}
+          </h1>
           <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 font-bold uppercase tracking-widest flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
             <span className="truncate">{user.email}</span>
             <span className="hidden sm:inline">&bull;</span>
-            <span className="flex-shrink-0">Academic Cycle 2026</span>
+            <span className="flex-shrink-0">Siklus Akademik 2026</span>
           </p>
         </header>
         {renderContent()}

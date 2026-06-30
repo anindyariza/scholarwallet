@@ -9,28 +9,28 @@ interface SettingsProps {
 export default function SettingsPanel({ userEmail }: SettingsProps) {
   const sections = [
     {
-      title: 'Profile',
+      title: 'Profil',
       icon: <User className="w-5 h-5" />,
       items: [
         { label: 'Email', value: userEmail },
-        { label: 'Academic Year', value: '2026' },
-        { label: 'Major', value: 'Not Set' }
+        { label: 'Tahun Akademik', value: '2026' },
+        { label: 'Jurusan', value: 'Belum Diatur' }
       ]
     },
     {
-      title: 'Security',
+      title: 'Keamanan',
       icon: <Shield className="w-5 h-5" />,
       items: [
-        { label: 'Biometric Login', value: 'Enabled' },
-        { label: 'Two-Factor Auth', value: 'Disabled' }
+        { label: 'Login Biometrik', value: 'Aktif' },
+        { label: 'Autentikasi Dua Faktor', value: 'Nonaktif' }
       ]
     },
     {
-      title: 'Notifications',
+      title: 'Notifikasi',
       icon: <Bell className="w-5 h-5" />,
       items: [
-        { label: 'Budget Alerts', value: 'On' },
-        { label: 'Weekly Summary', value: 'Off' }
+        { label: 'Peringatan Budget', value: 'Aktif' },
+        { label: 'Ringkasan Mingguan', value: 'Nonaktif' }
       ]
     }
   ];
@@ -62,11 +62,11 @@ export default function SettingsPanel({ userEmail }: SettingsProps) {
           className="w-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20 rounded-2xl py-4 font-bold transition-all flex items-center justify-center gap-2"
         >
           <LogOut className="w-5 h-5" />
-          Log Out
+          Keluar Sesi
         </button>
         <div className="flex items-center justify-center gap-2 text-slate-500 text-xs">
           <HelpCircle className="w-4 h-4" />
-          <span>ScholarWallet v1.2.0 &bull; Support Help Desk</span>
+          <span>ScholarWallet v1.2.0 &bull; Layanan Bantuan</span>
         </div>
       </div>
     </div>
