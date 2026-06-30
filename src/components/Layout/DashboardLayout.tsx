@@ -10,7 +10,10 @@ import {
   Plus,
   Shield,
   MessageSquare,
-  Megaphone
+  Megaphone,
+  Sun,
+  Moon,
+  HelpCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { logout } from '../../firebase/services/auth.service';
@@ -48,6 +51,7 @@ export default function DashboardLayout({
     { id: 'transactions', label: 'Transaksi', icon: Receipt },
     { id: 'analytics', label: 'Analisis', icon: PieChartIcon },
     { id: 'ask', label: 'Ask', icon: MessageSquare },
+    { id: 'about', label: 'Tentang & Panduan', icon: HelpCircle },
     { id: 'settings', label: 'Pengaturan', icon: Settings },
   ];
 
@@ -67,19 +71,26 @@ export default function DashboardLayout({
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
                 className={cn(
-                  "relative group flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-300",
+                  "relative group flex flex-col items-center justify-center p-3.5 rounded-2xl transition-all duration-300 cursor-pointer",
                   IsActive 
-                    ? "text-emerald-500 dark:text-emerald-400 bg-emerald-500/5" 
-                    : "text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                    ? "text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/5" 
+                    : "text-slate-400 dark:text-slate-500 hover:text-slate-950 dark:hover:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-800/40"
                 )}
                 title={item.label}
               >
-                <item.icon className={cn("w-6 h-6 transition-transform duration-300", IsActive ? "scale-110" : "group-hover:scale-110")} />
+                <item.icon className={cn("w-5.5 h-5.5 transition-transform duration-350", IsActive ? "scale-110" : "group-hover:scale-110")} />
                 {IsActive && (
-                  <motion.div 
-                    layoutId="nav-glow"
-                    className="absolute inset-0 bg-emerald-500/10 blur-xl rounded-full -z-10"
-                  />
+                  <>
+                    <motion.div 
+                      layoutId="sidebar-active-indicator"
+                      className="absolute left-0 top-[20%] h-[60%] w-1 bg-emerald-500 rounded-r-full"
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    />
+                    <motion.div 
+                      layoutId="nav-glow"
+                      className="absolute inset-0 bg-emerald-500/5 dark:bg-emerald-500/10 blur-xl rounded-full -z-10"
+                    />
+                  </>
                 )}
               </button>
             );
@@ -87,10 +98,18 @@ export default function DashboardLayout({
         </nav>
 
         <div className="pt-8 space-y-4 border-t border-slate-200 dark:border-slate-800/50 flex flex-col items-center w-full px-4">
+          <button 
+            onClick={toggleDarkMode}
+            className="p-3 text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-2xl transition-all hover:scale-110 active:scale-95"
+            title={isDarkMode ? "Mode Terang" : "Mode Gelap"}
+          >
+            {isDarkMode ? <Sun className="w-6 h-6 text-amber-400 animate-spin-slow" /> : <Moon className="w-6 h-6 text-slate-400" />}
+          </button>
+
           {showFeedback && (
             <button 
               onClick={onFeedbackClick}
-              className="relative p-3 text-slate-400 hover:text-indigo-500 hover:bg-indigo-500/5 rounded-2xl transition-all group"
+              className="relative p-3 text-slate-400 hover:text-indigo-500 hover:bg-indigo-500/5 rounded-2xl transition-all group hover:scale-110 active:scale-95"
               title="Feedback"
             >
               <Megaphone className="w-6 h-6" />
@@ -105,7 +124,7 @@ export default function DashboardLayout({
 
           <button 
             onClick={onAdminClick}
-            className="p-3 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-2xl transition-all"
+            className="p-3 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-2xl transition-all hover:scale-110 active:scale-95"
             title="Portal Admin"
           >
             <Shield className="w-6 h-6" />
@@ -113,7 +132,7 @@ export default function DashboardLayout({
 
           <button 
             onClick={() => logout()}
-            className="p-3 text-rose-500/80 hover:text-rose-400 hover:bg-rose-500/5 rounded-2xl transition-all"
+            className="p-3 text-rose-500/80 hover:text-rose-400 hover:bg-rose-500/5 rounded-2xl transition-all hover:scale-110 active:scale-95"
             title="Logout"
           >
             <LogOut className="w-6 h-6" />
@@ -142,7 +161,13 @@ export default function DashboardLayout({
             <span className="font-bold text-sm text-slate-900 dark:text-slate-50 tracking-tight font-display">ScholarWallet</span>
           </div>
 
-          <div className="w-10" /> {/* Spacer for centering */}
+          <button 
+            onClick={toggleDarkMode}
+            className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+            title={isDarkMode ? "Mode Terang" : "Mode Gelap"}
+          >
+            {isDarkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
+          </button>
         </header>
 
         <AnimatePresence>
@@ -241,7 +266,18 @@ export default function DashboardLayout({
                   </button>
                 </nav>
 
-                <div className="p-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="p-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                  <button 
+                    onClick={toggleDarkMode}
+                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
+                  >
+                    <div className="flex items-center gap-4">
+                      {isDarkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-slate-500" />}
+                      <span>{isDarkMode ? 'Mode Terang' : 'Mode Gelap'}</span>
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Pilih</span>
+                  </button>
+
                   <button 
                     onClick={() => logout()}
                     className="w-full flex items-center gap-4 px-4 py-3 rounded-xl font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all duration-200"

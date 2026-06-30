@@ -18,6 +18,7 @@ import FinancialHealthScore from './components/Dashboard/FinancialHealthScore';
 import SettingsPanel from './components/Settings/SettingsPanel';
 import FeedbackModal from './components/Feedback/FeedbackModal';
 import AskPanel from './components/Ask/AskPanel';
+import AboutPanel from './components/About/AboutPanel';
 import AdminLogin from './components/Admin/AdminLogin';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import { subscribeToAppConfig } from './firebase/services/db.service';
@@ -263,6 +264,8 @@ export default function App() {
         return <AnalyticsCharts transactions={transactions} />;
       case 'ask':
         return <AskPanel user={user} />;
+      case 'about':
+        return <AboutPanel />;
       case 'settings':
         return <SettingsPanel userEmail={user.email!} />;
       default:
@@ -322,22 +325,30 @@ export default function App() {
         transition={{ duration: 0.4 }}
         className="w-full"
       >
-        <header className="mb-6 sm:mb-8 px-1 sm:px-0">
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-50 tracking-tight capitalize italic uppercase">
-            {activeTab === 'dashboard' ? 'Selamat Datang' :
-             activeTab === 'transactions' ? 'Transaksi Keuangan' :
-             activeTab === 'analytics' ? 'Analisis Keuangan' :
-             activeTab === 'ask' ? 'Ask Admin' :
-             activeTab === 'settings' ? 'Pengaturan Akun' :
-             `${activeTab} Control`}
-          </h1>
-          <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 font-bold uppercase tracking-widest flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-            <span className="truncate">{user.email}</span>
-            <span className="hidden sm:inline">&bull;</span>
-            <span className="flex-shrink-0">Siklus Akademik 2026</span>
-          </p>
-        </header>
-        {renderContent()}
+        <div className={cn(
+          "w-full transition-all duration-300",
+          activeTab === 'settings' && "max-w-2xl mx-auto",
+          activeTab === 'about' && "max-w-4xl mx-auto",
+          activeTab === 'ask' && "max-w-4xl mx-auto"
+        )}>
+          <header className="mb-6 sm:mb-8 px-1 sm:px-0">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-50 tracking-tight capitalize italic uppercase">
+              {activeTab === 'dashboard' ? 'Selamat Datang' :
+               activeTab === 'transactions' ? 'Transaksi Keuangan' :
+               activeTab === 'analytics' ? 'Analisis Keuangan' :
+               activeTab === 'ask' ? 'Ask Admin' :
+               activeTab === 'about' ? 'Tentang & Panduan' :
+               activeTab === 'settings' ? 'Pengaturan Akun' :
+               `${activeTab} Control`}
+            </h1>
+            <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 font-bold uppercase tracking-widest flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+              <span className="truncate">{user.email}</span>
+              <span className="hidden sm:inline">&bull;</span>
+              <span className="flex-shrink-0">Siklus Akademik 2026</span>
+            </p>
+          </header>
+          {renderContent()}
+        </div>
       </motion.div>
 
       <TransactionModal 

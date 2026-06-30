@@ -25,44 +25,53 @@ export default function FinancialHealthScore({ income, expenses, budgetsReached 
   const totalScore = Math.round(savingsScore + coverageScore + disciplineScore);
 
   let status = 'Sangat Baik';
-  let color = 'text-emerald-400';
-  let bgColor = 'bg-emerald-400';
-  let icon = <ShieldCheck className="w-5 h-5" />;
+  let color = 'text-emerald-500 dark:text-emerald-400';
+  let bgColor = 'bg-emerald-500 dark:bg-emerald-400';
+  let icon = <ShieldCheck className="w-5.5 h-5.5" />;
+  let borderGlow = 'group-hover:border-emerald-500/30';
 
   if (totalScore < 40) {
     status = 'Butuh Perhatian';
-    color = 'text-rose-400';
-    bgColor = 'bg-rose-400';
-    icon = <AlertCircle className="w-5 h-5" />;
+    color = 'text-rose-500 dark:text-rose-400';
+    bgColor = 'bg-rose-500 dark:bg-rose-400';
+    icon = <AlertCircle className="w-5.5 h-5.5" />;
+    borderGlow = 'group-hover:border-rose-500/30';
   } else if (totalScore < 70) {
     status = 'Stabil';
-    color = 'text-amber-400';
-    bgColor = 'bg-amber-400';
-    icon = <Activity className="w-5 h-5" />;
+    color = 'text-amber-500 dark:text-amber-400';
+    bgColor = 'bg-amber-500 dark:bg-amber-400';
+    icon = <Activity className="w-5.5 h-5.5" />;
+    borderGlow = 'group-hover:border-amber-500/30';
   }
 
   return (
-    <div className="bento-card p-6 sm:p-8 flex items-center justify-between h-full relative overflow-hidden group">
+    <div className={cn(
+      "bento-card p-6 sm:p-8 flex items-center justify-between h-full relative overflow-hidden group bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all duration-500",
+      borderGlow
+    )}>
       {/* Subtle background glow */}
       <div className={cn(
-        "absolute -bottom-10 -left-10 w-32 h-32 blur-[80px] opacity-20 transition-opacity group-hover:opacity-30",
+        "absolute -bottom-10 -left-10 w-32 h-32 blur-[80px] opacity-10 transition-opacity duration-500 group-hover:opacity-20 pointer-events-none",
         totalScore < 40 ? "bg-rose-500" : totalScore < 70 ? "bg-amber-500" : "bg-emerald-500"
       )} />
 
-      <div className="space-y-2 sm:space-y-3 relative z-10">
-        <div className="flex items-center gap-2.5 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
-          <div className={cn("p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800", color)}>
+      <div className="space-y-3.5 relative z-10">
+        <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
+          <div className={cn("p-2 rounded-2xl bg-slate-50 dark:bg-slate-850 shadow-inner flex items-center justify-center", color)}>
             {icon}
           </div>
-          Kesehatan Keuangan
+          Health Score
         </div>
-        <div className="flex items-baseline gap-2">
-          <span className={cn("text-4xl sm:text-5xl font-display font-black tracking-tighter", color)}>{totalScore}</span>
-          <span className="text-slate-500 font-bold text-sm">/ 100</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", bgColor)} />
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-semibold">{status}</p>
+        
+        <div className="space-y-1">
+          <div className="flex items-baseline gap-1">
+            <span className={cn("text-5xl sm:text-6xl font-display font-black tracking-tighter", color)}>{totalScore}</span>
+            <span className="text-slate-400 dark:text-slate-500 font-bold text-sm">/100</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className={cn("w-2 h-2 rounded-full animate-pulse", bgColor)} />
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-bold uppercase tracking-wide">{status}</p>
+          </div>
         </div>
       </div>
 
@@ -74,8 +83,8 @@ export default function FinancialHealthScore({ income, expenses, budgetsReached 
             r="40%"
             fill="none"
             stroke="currentColor"
-            strokeWidth="10"
-            className="text-slate-200 dark:text-slate-800"
+            strokeWidth="11"
+            className="text-slate-100 dark:text-slate-850"
           />
           <motion.circle
             cx="50%"
@@ -83,7 +92,7 @@ export default function FinancialHealthScore({ income, expenses, budgetsReached 
             r="40%"
             fill="none"
             stroke="currentColor"
-            strokeWidth="10"
+            strokeWidth="11"
             strokeDasharray="251.32"
             initial={{ strokeDashoffset: 251.32 }}
             animate={{ strokeDashoffset: 251.32 - (251.32 * totalScore) / 100 }}
@@ -92,10 +101,11 @@ export default function FinancialHealthScore({ income, expenses, budgetsReached 
             transition={{ duration: 1.5, ease: "easeOut" }}
           />
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className={cn("w-3 h-3 rounded-full blur-[2px]", bgColor)} />
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <div className={cn("w-3 h-3 rounded-full blur-[1px]", bgColor)} />
         </div>
       </div>
     </div>
   );
 }
+

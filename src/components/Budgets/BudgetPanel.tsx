@@ -32,6 +32,7 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
   const [isAdding, setIsAdding] = useState(false);
   const [editingBudgetId, setEditingBudgetId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   
   // Add form states
   const [newCategory, setNewCategory] = useState<string>(EXPENSE_CATEGORIES[0]);
@@ -83,13 +84,12 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
 
   const handleDelete = async (budgetId: string | undefined) => {
     if (!budgetId) return;
-    if (window.confirm('Apakah Anda yakin ingin menghapus budget ini?')) {
-      try {
-        await deleteBudget(budgetId);
-        showToastMessage('Budget berhasil dihapus!');
-      } catch (err) {
-        showToastMessage('Gagal menghapus budget', 'error');
-      }
+    try {
+      await deleteBudget(budgetId);
+      showToastMessage('Budget berhasil dihapus!');
+      setPendingDeleteId(null);
+    } catch (err) {
+      showToastMessage('Gagal menghapus budget', 'error');
     }
   };
 
@@ -200,15 +200,13 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 relative z-10">
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-emerald-500/10 rounded-2xl text-emerald-600 dark:text-emerald-400">
-              <Target className="w-6 h-6 animate-pulse" />
-            </div>
-            <div>
-              <h2 className="text-xl font-display font-black text-slate-900 dark:text-white tracking-tight">Monitor Budget Pengeluaran</h2>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Atur, kustomisasi & pantau batas pengeluaran</p>
-            </div>
+        <div className="flex items-center gap-3.5">
+          <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-sm">
+            <Target className="w-6 h-6 animate-pulse" />
+          </div>
+          <div className="space-y-0.5">
+            <h2 className="text-xl font-display font-black text-slate-900 dark:text-white tracking-tight">Monitor Budget Pengeluaran</h2>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium tracking-normal leading-normal">Atur, kustomisasi & pantau batas pengeluaran bulanan Anda</p>
           </div>
         </div>
 
@@ -460,13 +458,31 @@ export default function BudgetPanel({ budgets, transactions, userId }: BudgetPan
                 {/* Card Actions Footer */}
                 <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between">
                   {/* Left Side: Delete */}
-                  <button 
-                    onClick={() => handleDelete(budget.id)}
-                    className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
-                    title="Hapus budget ini"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  {pendingDeleteId !== budget.id ? (
+                    <button 
+                      onClick={() => setPendingDeleteId(budget.id || null)}
+                      className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer"
+                      title="Hapus budget ini"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  ) : (
+                    <div className="flex items-center gap-1.5 bg-rose-550/10 dark:bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded-xl animate-in fade-in zoom-in-95 duration-200">
+                      <span className="text-[9px] text-rose-600 dark:text-rose-400 font-extrabold uppercase tracking-wider">Hapus?</span>
+                      <button 
+                        onClick={() => handleDelete(budget.id)}
+                        className="text-[9px] text-white bg-rose-600 dark:bg-rose-500 hover:bg-rose-700 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider cursor-pointer transition-colors"
+                      >
+                        Ya
+                      </button>
+                      <button 
+                        onClick={() => setPendingDeleteId(null)}
+                        className="text-[9px] text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider cursor-pointer hover:text-slate-800 dark:hover:text-white transition-colors"
+                      >
+                        X
+                      </button>
+                    </div>
+                  )}
 
                   {/* Right Side: Edit control state */}
                   {!isEditing ? (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wallet, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '../../lib/utils';
 
@@ -23,24 +23,24 @@ export default function KPIStats({ balance, income, expenses }: KPIStatsProps) {
       label: 'Saldo Bersih',
       value: formatCurrency(balance),
       icon: Wallet,
-      color: 'slate',
-      change: '+2.5%',
+      color: 'indigo',
+      change: 'Aktif',
       isPositive: true,
     },
     {
-      label: 'Pemasukan Bulanan',
+      label: 'Total Pemasukan',
       value: formatCurrency(income),
       icon: TrendingUp,
       color: 'emerald',
-      change: '+12%',
+      change: 'Bulan Ini',
       isPositive: true,
     },
     {
-      label: 'Pengeluaran Bulanan',
+      label: 'Total Pengeluaran',
       value: formatCurrency(expenses),
       icon: TrendingDown,
       color: 'rose',
-      change: '-5%',
+      change: 'Bulan Ini',
       isPositive: false,
     },
   ];
@@ -52,42 +52,48 @@ export default function KPIStats({ balance, income, expenses }: KPIStatsProps) {
           key={stat.label}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: idx * 0.1 }}
-          className="bento-card group p-5 sm:p-8 flex flex-col justify-between min-h-[140px] sm:min-h-[160px] relative overflow-hidden"
+          transition={{ delay: idx * 0.1, type: "spring", stiffness: 100 }}
+          className={cn(
+            "bento-card group p-6 sm:p-8 flex flex-col justify-between min-h-[160px] sm:min-h-[180px] relative overflow-hidden bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all duration-500",
+            stat.color === 'emerald' ? "hover:border-emerald-500/30" : stat.color === 'rose' ? "hover:border-rose-500/30" : "hover:border-indigo-500/30"
+          )}
         >
-          {/* Subtle Accent Gradient */}
+          {/* Subtle Accent Gradient Background Glow */}
           <div className={cn(
-            "absolute -top-10 -right-10 w-24 h-24 blur-[80px] opacity-20 transition-opacity group-hover:opacity-40",
+            "absolute -top-10 -right-10 w-28 h-28 blur-[80px] opacity-10 transition-opacity duration-500 group-hover:opacity-25 pointer-events-none",
             stat.color === 'emerald' ? "bg-emerald-500" : stat.color === 'rose' ? "bg-rose-500" : "bg-indigo-500"
           )} />
 
           <div className="flex justify-between items-start relative z-10">
             <div className={cn(
-              "p-2 rounded-xl sm:p-2.5",
-              stat.color === 'emerald' ? "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400" : 
-              stat.color === 'rose' ? "bg-rose-500/10 text-rose-500 dark:text-rose-400" : 
-              "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+              "p-3 rounded-2xl shadow-sm flex items-center justify-center",
+              stat.color === 'emerald' ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : 
+              stat.color === 'rose' ? "bg-rose-500/10 text-rose-600 dark:text-rose-400" : 
+              "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
             )}>
-              <stat.icon className="w-4 h-4 sm:w-5 sm:h-5" />
+              <stat.icon className="w-5 h-5" />
             </div>
             <div className={cn(
-              "px-2 py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wider",
-              stat.isPositive ? "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400" : "bg-rose-500/10 text-rose-500 dark:text-rose-400"
+              "px-3 py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest",
+              stat.color === 'emerald' ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : 
+              stat.color === 'rose' ? "bg-rose-500/10 text-rose-600 dark:text-rose-400" : 
+              "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
             )}>
               {stat.change}
             </div>
           </div>
 
-          <div className="space-y-1 relative z-10 mt-3 sm:mt-6">
-            <p className="text-[8px] sm:text-[10px] font-black text-slate-500 uppercase tracking-wider sm:tracking-[0.2em]">{stat.label}</p>
+          <div className="space-y-1 relative z-10 mt-6">
+            <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">{stat.label}</p>
             <h3 
               title={stat.value}
               className={cn(
-              "text-base sm:text-lg lg:text-xl xl:text-2xl font-display font-bold tracking-tight break-all sm:break-words",
-              stat.color === 'emerald' ? "text-emerald-500 dark:text-emerald-400" : 
-              stat.color === 'rose' ? "text-rose-500 dark:text-rose-400" : 
-              "text-slate-900 dark:text-white"
-            )}>
+                "text-lg sm:text-xl lg:text-2xl font-display font-black tracking-tight truncate",
+                stat.color === 'emerald' ? "text-emerald-600 dark:text-emerald-400" : 
+                stat.color === 'rose' ? "text-rose-600 dark:text-rose-400" : 
+                "text-indigo-600 dark:text-white"
+              )}
+            >
               {stat.value}
             </h3>
           </div>
@@ -96,3 +102,4 @@ export default function KPIStats({ balance, income, expenses }: KPIStatsProps) {
     </div>
   );
 }
+
