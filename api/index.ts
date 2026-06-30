@@ -127,15 +127,79 @@ Konteks Aplikasi ScholarWallet:
       
       let response;
       try {
-        response = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
-          contents,
-          config: {
-            systemInstruction,
-            temperature: 0.7,
-            maxOutputTokens: 2048,
+        try {
+          response = await ai.models.generateContent({
+            model: "gemini-3.1-flash-lite",
+            contents,
+            config: {
+              systemInstruction,
+              temperature: 0.7,
+              maxOutputTokens: 2048,
+            }
+          });
+        } catch (firstErr: any) {
+          const errStr = (firstErr.message || String(firstErr)).toLowerCase();
+          console.warn("First try with gemini-3.1-flash-lite failed:", errStr);
+          
+          // Fail-fast if the error is related to API Key, Quota, Blocked/Suspended accounts, or Permissions
+          const isAuthOrQuotaError = 
+            errStr.includes("quota") || 
+            errStr.includes("limit") || 
+            errStr.includes("429") || 
+            errStr.includes("403") || 
+            errStr.includes("401") || 
+            errStr.includes("key") || 
+            errStr.includes("permission") || 
+            errStr.includes("invalid") ||
+            errStr.includes("forbidden") ||
+            errStr.includes("blocked") ||
+            errStr.includes("suspended");
+
+          if (isAuthOrQuotaError) {
+            throw firstErr; // Throw immediately to prevent sequential timeouts on invalid/overlimit API keys
           }
-        });
+
+          try {
+            response = await ai.models.generateContent({
+              model: "gemini-3.5-flash",
+              contents,
+              config: {
+                systemInstruction,
+                temperature: 0.7,
+                maxOutputTokens: 2048,
+              }
+            });
+          } catch (secondErr: any) {
+            const secondErrStr = (secondErr.message || String(secondErr)).toLowerCase();
+            console.warn("Second try with gemini-3.5-flash failed:", secondErrStr);
+            
+            if (
+              secondErrStr.includes("quota") || 
+              secondErrStr.includes("limit") || 
+              secondErrStr.includes("429") || 
+              secondErrStr.includes("403") || 
+              secondErrStr.includes("401") || 
+              secondErrStr.includes("key") || 
+              secondErrStr.includes("permission") || 
+              secondErrStr.includes("invalid") ||
+              secondErrStr.includes("forbidden") ||
+              secondErrStr.includes("blocked") ||
+              secondErrStr.includes("suspended")
+            ) {
+              throw secondErr;
+            }
+
+            response = await ai.models.generateContent({
+              model: "gemini-flash-latest",
+              contents,
+              config: {
+                systemInstruction,
+                temperature: 0.7,
+                maxOutputTokens: 2048,
+              }
+            });
+          }
+        }
       } catch (err: any) {
         throw err;
       }
